@@ -231,6 +231,7 @@ public:
         MultiFab resid_mf(resid.boxArray(),resid.DistributionMap(),resid.nComp(),resid.nGrow());
         MultiFab x_mf(x.boxArray(),x.DistributionMap(),x.nComp(),x.nGrow());
         MultiFab b_mf(b.boxArray(),b.DistributionMap(),b.nComp(),b.nGrow());
+	amrex::Abort("This function is incomplete");
         correctionResidual(amrlev,mglev,resid_mf,x_mf,b_mf,bc_mode,crse_bcdata);
     }
 
