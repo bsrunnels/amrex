@@ -372,6 +372,19 @@ void amrex_avgdown (Box const& bx, Array4<T> const& crse,
     }
 }
 
+template <typename T, typename = decltype(T::Zero())>
+T zero_impl(int) {
+    return T::Zero();
+}
+template <typename T>
+std::enable_if_t<std::is_arithmetic_v<T>, T> zero_impl(...) {
+    return T(0);
+}
+template <typename T>
+T zero() {
+    return zero_impl<T>(0);
+}
+
 template <typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
 void amrex_avgdown (int i, int j, int k, int n, Array4<T> const& crse,
@@ -381,11 +394,11 @@ void amrex_avgdown (int i, int j, int k, int n, Array4<T> const& crse,
     const int facx = ratio[0];
     const int facy = ratio[1];
     const int facz = ratio[2];
-    const T volfrac = T(1.0)/T(facx*facy*facz);
+    const Real volfrac = Real(1.0)/Real(facx*facy*facz);
     const int ii = i*facx;
     const int jj = j*facy;
     const int kk = k*facz;
-    T c = 0;
+    T c = zero<T>();
     for (int kref = 0; kref < facz; ++kref) {
     for (int jref = 0; jref < facy; ++jref) {
     for (int iref = 0; iref < facx; ++iref) {

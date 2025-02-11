@@ -117,9 +117,9 @@ face_cons_linear_face_interp (int i, int j, int k, int n, Array4<T> const& fine,
 #if (AMREX_SPACEDIM >= 2)
             if (cj > per_grown_domain.smallEnd(1) && cj < per_grown_domain.bigEnd(1) && ratio[1] > 1) {
                 Real sfy = Real(1.0);
-                Real dc = Real(0.5) * (crse(ci,cj+1,ck,n) - crse(ci,cj-1,ck,n));
-                Real df = Real(2.0) * (crse(ci,cj+1,ck,n) - crse(ci,cj  ,ck,n));
-                Real db = Real(2.0) * (crse(ci,cj  ,ck,n) - crse(ci,cj-1,ck,n));
+                T dc = Real(0.5) * (crse(ci,cj+1,ck,n) - crse(ci,cj-1,ck,n));
+                T df = Real(2.0) * (crse(ci,cj+1,ck,n) - crse(ci,cj  ,ck,n));
+                T db = Real(2.0) * (crse(ci,cj  ,ck,n) - crse(ci,cj-1,ck,n));
                 Real sy = (df*db >= Real(0.0)) ?
                     amrex::min(std::abs(df),std::abs(db)) : Real(0.);
                 sy = std::copysign(Real(1.),dc)*amrex::min(sy,std::abs(dc));
@@ -237,8 +237,9 @@ face_cons_linear_face_interp (int i, int j, int k, int n, Array4<T> const& fine,
 // lining up with coarse edges--assume these have been set to hold the
 // values you want to interpolate to the rest.
 //
+template<typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
-face_linear_interp_x (int i, int j, int k, int n, amrex::Array4<amrex::Real> const& fine,
+face_linear_interp_x (int i, int j, int k, int n, amrex::Array4<T> const& fine,
                       IntVect const& ratio) noexcept
 {
     const int ci = amrex::coarsen(i,ratio[0]);
@@ -252,8 +253,9 @@ face_linear_interp_x (int i, int j, int k, int n, amrex::Array4<amrex::Real> con
     }
 }
 
+template<typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
-face_linear_interp_y (int i, int j, int k, int n, amrex::Array4<amrex::Real> const& fine,
+face_linear_interp_y (int i, int j, int k, int n, amrex::Array4<T> const& fine,
                       IntVect const& ratio) noexcept
 {
     const int cj = amrex::coarsen(j,ratio[1]);
@@ -268,8 +270,9 @@ face_linear_interp_y (int i, int j, int k, int n, amrex::Array4<amrex::Real> con
 
 }
 
+template<typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE void
-face_linear_interp_z (int i, int j, int k, int n, amrex::Array4<amrex::Real> const& fine,
+face_linear_interp_z (int i, int j, int k, int n, amrex::Array4<T> const& fine,
                       IntVect const& ratio) noexcept
 {
     const int ck = amrex::coarsen(k,ratio[2]);
@@ -283,8 +286,9 @@ face_linear_interp_z (int i, int j, int k, int n, amrex::Array4<amrex::Real> con
     }
 }
 
+template<typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
-void cell_quartic_interp_x (int i, int j, int k, int n, Array4<Real> const& fine,
+void cell_quartic_interp_x (int i, int j, int k, int n, Array4<T> const& fine,
                             Array4<Real const> const& crse) noexcept
 {
     constexpr Array1D<Real,-2,2> c = {Real(0.01708984), Real(-0.12304688),
@@ -299,9 +303,10 @@ void cell_quartic_interp_x (int i, int j, int k, int n, Array4<Real> const& fine
         +           c( 2*s)*crse(ii+2,j,k,n);
 }
 
+template<typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
-void cell_quartic_interp_y (int i, int j, int k, int n, Array4<Real> const& fine,
-                            Array4<Real const> const& crse) noexcept
+void cell_quartic_interp_y (int i, int j, int k, int n, Array4<T> const& fine,
+                            Array4<T const> const& crse) noexcept
 {
     constexpr Array1D<Real,-2,2> c = {Real(0.01708984), Real(-0.12304688),
                                       Real(0.92285156), Real(0.20507812),
@@ -315,9 +320,10 @@ void cell_quartic_interp_y (int i, int j, int k, int n, Array4<Real> const& fine
         +           c( 2*s)*crse(i,jj+2,k,n);
 }
 
+template<typename T>
 AMREX_GPU_HOST_DEVICE AMREX_FORCE_INLINE
-void cell_quartic_interp_z (int i, int j, int k, int n, Array4<Real> const& fine,
-                            Array4<Real const> const& crse) noexcept
+void cell_quartic_interp_z (int i, int j, int k, int n, Array4<T> const& fine,
+                            Array4<T const> const& crse) noexcept
 {
     constexpr Array1D<Real,-2,2> c = {Real(0.01708984), Real(-0.12304688),
                                       Real(0.92285156), Real(0.20507812),
