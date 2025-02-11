@@ -285,13 +285,16 @@ void amrex_avgdown (int i, int j, int, int n, Array4<T> const& crse,
 {
     const int facx = ratio[0];
     const int facy = ratio[1];
-    const T volfrac = T(1.0)/T(facx*facy);
+    const Real volfrac = Real(1.0)/Real(facx*facy);
     const int ii = i*facx;
     const int jj = j*facy;
-    T c = 0;
+    T c;
     for (int jref = 0; jref < facy; ++jref) {
     for (int iref = 0; iref < facx; ++iref) {
-        c += fine(ii+iref,jj+jref,0,n+fcomp);
+        if (iref == 0 && jref == 0)
+            c = fine(ii+iref,jj+jref,0,n+fcomp);
+        else
+            c += fine(ii+iref,jj+jref,0,n+fcomp);
     }}
     crse(i,j,0,n+ccomp) = volfrac * c;
 }
