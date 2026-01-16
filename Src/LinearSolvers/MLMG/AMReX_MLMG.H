@@ -1779,12 +1779,21 @@ MLMGT<MF>::interpCorrection (int alev)
         ng_dst = linop.getNGrow(alev-1);
     }
 
-    MF cfine = linop.makeCoarseAmr(alev, IntVect(ng_dst));
-    setVal(cfine, RT(0.0));
-    ParallelCopy(cfine, crse_cor, 0, 0, ncomp, IntVect(ng_src), IntVect(ng_dst),
-                 crse_geom.periodicity());
+    amrex::Print() << "WARNING: interpCorrection has been modified for debugging purposes" << std::endl;
 
-    linop.interpolationAmr(alev, fine_cor, cfine, nghost); // NOLINT(readability-suspicious-call-argument)
+
+    ///// MF cfine = linop.makeCoarseAmr(alev, IntVect(ng_dst));
+    ///// setVal(cfine, RT(0.0));
+    ///// ParallelCopy(cfine, crse_cor, 0, 0, ncomp, IntVect(ng_src), IntVect(ng_dst),
+    /////              crse_geom.periodicity());
+    /////
+    ///// linop.interpolationAmr(alev, fine_cor, cfine, nghost); // NOLINT(readability-suspicious-call-argument)
+
+    // This has been modified to pass in crse_cor INSTEAD of CFINE, so that we can
+    // investigate ParallelCopy behavior
+    linop.interpolationAmr(alev, fine_cor, crse_cor, nghost); // NOLINT(readability-suspicious-call-argument)
+
+    amrex::Abort(); // Remove this once we revert back.
 }
 
 // Interpolate correction between MG levels
