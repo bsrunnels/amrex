@@ -1793,7 +1793,6 @@ MLMGT<MF>::interpCorrection (int alev)
     // investigate ParallelCopy behavior
     linop.interpolationAmr(alev, fine_cor, crse_cor, nghost); // NOLINT(readability-suspicious-call-argument)
 
-    amrex::Abort(); // Remove this once we revert back.
 }
 
 // Interpolate correction between MG levels
